@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "TxDash"
 include(":app")
- 
+include(":domain")
+include(":data")
