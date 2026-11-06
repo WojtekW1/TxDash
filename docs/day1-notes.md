@@ -2,21 +2,30 @@
 
 ## Ćwiczenie na papierze
 
-### Trasowanie put (16 bucketów, maska 0b1111, bez spreadingu)
+16 wieszaków, numer wieszaka = reszta z dzielenia hasha przez 16.
 
-Klucze o hashach: 5, 21, 37, 6, 22, 5 (ostatni equals z pierwszym, inna wartość)
+### 1. Wstawianie
 
-### Resize 16 → 32
+Hashe: 5, 21, 37, 6, 22, 5 (ostatni to to samo nazwisko co pierwszy, więc podmiana, nie dodanie).
+Stan wieszaków po każdym kroku i końcowy rozmiar:
 
-### Usunięcie środkowego węzła z łańcucha
+### 2. Powiększenie do 32 wieszaków
+
+Dodawaj dalej, aż kurtek będzie więcej niż 12. Po przewieszeniu (reszta z dzielenia przez 32), które kurtki zmieniły wieszak?
+
+### 3. Zdjęcie kurtki ze środka łańcuszka
+
+Co trzeba zrobić, żeby kolejne kurtki dalej wisiały w łańcuszku?
 
 ## Pytania sprawdzające
 
-1. Dlaczego rozmiar tablicy to potęga dwójki?
-2. Po co spreading i co by się stało bez niego?
-3. Czemu przy resize nie wystarczy skopiować węzłów na te same indeksy?
-4. Co się stanie z kluczem mutowalnym po zmianie pola w `hashCode`?
-5. Czemu `HashMap<Long, V>` kosztuje więcej pamięci niż `LongSparseArray<V>`?
+1. Po co zamieniamy nazwisko na liczbę?
+
+2. Co to kolizja i co wtedy robimy?
+
+3. Dlaczego po powiększeniu szatni trzeba przewiesić wszystkie kurtki?
+
+4. Co się stanie, gdy zmienisz klucz po wstawieniu go do mapy?
 
 ## Część D: Big O
 
