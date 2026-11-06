@@ -2,30 +2,50 @@
 
 ## Ćwiczenie na papierze
 
-16 wieszaków, numer wieszaka = reszta z dzielenia hasha przez 16.
+Tablica ma 16 miejsc (0-15). Miejsce wpisu = reszta z dzielenia jego liczby (hash) przez 16.
 
 ### 1. Wstawianie
 
-Hashe: 5, 21, 37, 6, 22, 5 (ostatni to to samo nazwisko co pierwszy, więc podmiana, nie dodanie).
-Stan wieszaków po każdym kroku i końcowy rozmiar:
+Dodajesz 6 wpisów o liczbach: 5, 21, 37, 6, 22, 5 (ostatnia to ten sam klucz co pierwsza, więc nadpisanie, nie nowy wpis).
+Stan tablicy po każdym kroku i końcowa liczba wpisów:
 
-### 2. Powiększenie do 32 wieszaków
+miejsce 5: 3 wpisy (5, 21, 37)
+miejsce 6: 2 wpisy (6, 22)
 
-Dodawaj dalej, aż kurtek będzie więcej niż 12. Po przewieszeniu (reszta z dzielenia przez 32), które kurtki zmieniły wieszak?
+### 2. Powiększenie do 32 miejsc
 
-### 3. Zdjęcie kurtki ze środka łańcuszka
+Tablicę powiększasz z 16 do 32 miejsc. Policz miejsce każdego wpisu od nowa (reszta z dzielenia przez 32). Które wpisy zmieniły miejsce?
 
-Co trzeba zrobić, żeby kolejne kurtki dalej wisiały w łańcuszku?
+miejsce 5: 2 wpisy (5, 37)
+miejsce 6: 1 wpis (6)
+miejsce 21: 1 wpis (21)
+miejsce 22: 1 wpis (22)
+
+Zmieniły miejsce wpisy 21 i 22
+
+### 3. Usunięcie wpisu ze środka łańcuszka
+
+Na jednym miejscu tablicy wpisy tworzą łańcuszek: każdy wskazuje na następny. Usuwasz wpis ze środka. Co trzeba zmienić, żeby reszta łańcuszka dalej była połączona?
+
+Należy zmienić wtedy wskazanie wpisu poprzedzającego usunięty na następujący po usuniętym
 
 ## Pytania sprawdzające
 
-1. Po co zamieniamy nazwisko na liczbę?
+1. Po co zamieniamy klucz na liczbę (hash)?
+
+Klucz zamieniamy na liczbę (hash) po to żeby identyfikacja była szybsza i łatwiejsza, z liczby wyliczamy miejsce w tablicy i idziemy tam od razu zamiast przeglądać wszystkie wpisy po kolei
 
 2. Co to kolizja i co wtedy robimy?
 
-3. Dlaczego po powiększeniu szatni trzeba przewiesić wszystkie kurtki?
+Kolizja to moment, w którym w jedno miejsce w tablicy trafia kilka wpisów o różnych kluczach, wtedy należy utworzyć łańcuszek dopisując elementy jeden za drugim
+
+3. Dlaczego po powiększeniu tablicy trzeba przenieść wszystkie wpisy na nowe miejsca?
+
+Ponieważ zmienia się reszta z dzielenia, przy szukaniu liczymy już nową resztę więc wpis leżący w starym miejscu nie zostałby znaleziony
 
 4. Co się stanie, gdy zmienisz klucz po wstawieniu go do mapy?
+
+Zmiana klucza zmienia jego hash więc wyliczone miejsce jest inne niż to, gdzie wpis naprawdę leży
 
 ## Część D: Big O
 
