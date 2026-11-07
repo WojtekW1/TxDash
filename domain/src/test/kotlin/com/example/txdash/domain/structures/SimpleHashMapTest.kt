@@ -134,4 +134,87 @@ class SimpleHashMapTest {
         //Then
         assertEquals(true, map.containsKey("a"))
     }
+
+    @Test
+    fun givenMapWithExistingKey_whenDeletingExistingKey_thenContainsKeyReturnsFalse() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+        map.put("a", 1)
+
+        //When
+        map.remove("a")
+
+        //Then
+        assertEquals(false, map.containsKey("a"))
+        assertEquals(0, map.size)
+    }
+
+    @Test
+    fun givenEmptyMap_whenDeletingNonExistingKey_thenRemoveReturnsNull() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        val result = map.remove("x")
+
+        //Then
+        assertNull(result)
+    }
+
+    @Test
+    fun givenChainOfThree_whenRemovingFirstEntry_thenOthersRemain() {
+        //Given
+        val map = SimpleHashMap<String, Int>(1)
+        map.put("a", 1)
+        map.put("b", 2)
+        map.put("c", 3)
+
+        //When
+        val removed = map.remove("c")
+
+        //Then
+        assertEquals(3, removed)
+        assertNull(map.get("c"))
+        assertEquals(1, map.get("a"))
+        assertEquals(2, map.get("b"))
+        assertEquals(2, map.size)
+    }
+
+    @Test
+    fun givenChainOfThree_whenRemovingMiddleEntry_thenOthersRemain() {
+        //Given
+        val map = SimpleHashMap<String, Int>(1)
+        map.put("a", 1)
+        map.put("b", 2)
+        map.put("c", 3)
+
+        //When
+        val removed = map.remove("b")
+
+        //Then
+        assertEquals(2, removed)
+        assertNull(map.get("b"))
+        assertEquals(1, map.get("a"))
+        assertEquals(3, map.get("c"))
+        assertEquals(2, map.size)
+    }
+
+    @Test
+    fun givenChainOfThree_whenRemovingLastEntry_thenOthersRemain() {
+        //Given
+        val map = SimpleHashMap<String, Int>(1)
+        map.put("a", 1)
+        map.put("b", 2)
+        map.put("c", 3)
+
+        //When
+        val removed = map.remove("a")
+
+        //Then
+        assertEquals(1, removed)
+        assertNull(map.get("a"))
+        assertEquals(2, map.get("b"))
+        assertEquals(3, map.get("c"))
+        assertEquals(2, map.size)
+    }
 }

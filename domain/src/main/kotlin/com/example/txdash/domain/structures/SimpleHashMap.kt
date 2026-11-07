@@ -74,4 +74,29 @@ class SimpleHashMap<K : Any, V>(
 
         return false
     }
+
+    fun remove(key: K): V? {
+        val index = indexFor(key)
+
+        var previous: Entry<K, V>? = null
+        var current: Entry<K, V>? = table[index]
+
+        while (current != null) {
+            if (current.key == key) {
+                if (previous == null) {
+                    table[index] = current.next
+                } else {
+                    previous.next = current.next
+                }
+
+                size--
+                return current.value
+            }
+
+            previous = current
+            current = current.next
+        }
+
+        return null
+    }
 }
