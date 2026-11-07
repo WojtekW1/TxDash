@@ -98,4 +98,40 @@ class SimpleHashMapTest {
         //Then
         assertNull(oldValue)
     }
+
+    @Test
+    fun givenEmptyMap_whenPutKey_thenKeyExists() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        map.put("a", 1)
+
+        //Then
+        assertEquals(true, map.containsKey("a"))
+    }
+
+    @Test
+    fun givenEmptyMap_whenSearchingKey_thenContainsKeyReturnsFalse() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        val searched = map.containsKey("x")
+
+        //Then
+        assertEquals(false, searched)
+    }
+
+    @Test
+    fun givenEmptyMap_whenPutNullValue_thenContainsKeyReturnsTrue() {
+        //Given
+        val map = SimpleHashMap<String, Int?>()
+
+        //When
+        map.put("a", null)
+
+        //Then
+        assertEquals(true, map.containsKey("a"))
+    }
 }

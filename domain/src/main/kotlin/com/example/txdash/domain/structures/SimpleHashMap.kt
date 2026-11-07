@@ -58,4 +58,20 @@ class SimpleHashMap<K : Any, V>(
 
         return null
     }
+
+    fun containsKey(key: K): Boolean {
+        val index = indexFor(key)
+
+        var current: Entry<K, V>? = table[index]
+
+        while (current != null) {
+            if (current.key == key) {
+                return true
+            }
+
+            current = current.next
+        }
+
+        return false
+    }
 }
