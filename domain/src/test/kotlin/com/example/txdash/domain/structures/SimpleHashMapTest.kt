@@ -217,4 +217,78 @@ class SimpleHashMapTest {
         assertEquals(3, map.get("c"))
         assertEquals(2, map.size)
     }
+
+    @Test
+    fun givenEmptyMap_whenPutThousandEntries_thenSizeAndValueIsReturned() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        for (i in 1..1000) {
+            map.put("key$i", i)
+        }
+
+        //Then
+        assertEquals(1000, map.size)
+        for (i in 1..1000) {
+            assertEquals(i, map.get("key$i"))
+        }
+    }
+
+    @Test
+    fun givenEmptyMap_whenPut13Elements_thenResizeCorrect() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        for (i in 1..13) {
+            map.put("key$i", i)
+        }
+
+        //Then
+        assertEquals(13, map.size)
+
+        for (i in 1..13) {
+            assertEquals(i, map.get("key$i"))
+        }
+    }
+
+    @Test
+    fun givenMapWith100Elements_whenRemovedEvenElements_thenOddReturnsNull() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+        for (i in 1..100) {
+            map.put("key$i", i)
+        }
+
+        //When
+        for (i in 1..100) {
+            if (i % 2 == 0) {
+                map.remove("key$i")
+            }
+        }
+
+        //Then
+        assertEquals(50, map.size)
+
+        for (i in 1..100) {
+            if (i % 2 == 0) {
+                assertNull(map.get("key$i"))
+            } else {
+                assertEquals(i, map.get("key$i"))
+            }
+        }
+    }
+
+    @Test
+    fun givenEmptyMap_whenPutNegativeHashCode_thenValueIsReturned() {
+        //Given
+        val map = SimpleHashMap<Int, String>()
+
+        //When
+        map.put(-5, "x")
+
+        //Then
+        assertEquals("x", map.get(-5))
+    }
 }

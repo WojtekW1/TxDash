@@ -56,6 +56,10 @@ class SimpleHashMap<K : Any, V>(
         table[index] = newEntry
         size++
 
+        if (size > table.size * 0.75) {
+            resize()
+        }
+
         return null
     }
 
@@ -98,5 +102,21 @@ class SimpleHashMap<K : Any, V>(
         }
 
         return null
+    }
+
+    private fun resize() {
+        val oldTable = table
+        table = arrayOfNulls(oldTable.size * 2)
+
+        for (bucket in oldTable) {
+            var current = bucket
+            while (current != null) {
+                val next = current.next
+                val newIndex = indexFor(current.key)
+                current.next = table[newIndex]
+                table[newIndex] = current
+                current = next
+            }
+        }
     }
 }
