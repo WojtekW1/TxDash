@@ -119,4 +119,22 @@ class SimpleHashMap<K : Any, V>(
             }
         }
     }
+
+    internal fun maxBucketLength(): Int {
+        var max = 0
+        for (bucket in table) {
+            var length = 0
+            var current = bucket
+            while (current != null) {
+                length++
+                current = current.next
+            }
+
+            if (length > max) {
+                max = length
+            }
+        }
+
+        return max
+    }
 }

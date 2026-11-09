@@ -2,6 +2,7 @@ package com.example.txdash.domain.structures
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SimpleHashMapTest {
@@ -72,18 +73,17 @@ class SimpleHashMapTest {
     @Test
     fun givenKeyToEmptyMap_whenAddedKeyInTheSamePlace_thenCollisionHandledProperly() {
         //Given
-        val map = SimpleHashMap<String, Int>(1)
-        map.put("a", 1)
+        // klucze 1 i 17 mają to samo miejsce (reszta 1 z dzielenia przez 16), a resize się nie włączy
+        val map = SimpleHashMap<Int, String>(16)
+        map.put(1, "a")
 
         //When
-        map.put("b", 2)
+        map.put(17, "b")
 
         //Then
-        val value1 = map.get("a")
-        val value2 = map.get("b")
-
-        assertEquals(1, value1)
-        assertEquals(2, value2)
+        assertEquals(2, map.maxBucketLength())
+        assertEquals("a", map.get(1))
+        assertEquals("b", map.get(17))
         assertEquals(2, map.size)
     }
 
@@ -164,57 +164,63 @@ class SimpleHashMapTest {
     @Test
     fun givenChainOfThree_whenRemovingFirstEntry_thenOthersRemain() {
         //Given
-        val map = SimpleHashMap<String, Int>(1)
-        map.put("a", 1)
-        map.put("b", 2)
-        map.put("c", 3)
+        // klucze 1, 17, 33 trafiają na to samo miejsce; łańcuszek: 33 -> 17 -> 1
+        val map = SimpleHashMap<Int, String>(16)
+        map.put(1, "a")
+        map.put(17, "b")
+        map.put(33, "c")
+        assertEquals(3, map.maxBucketLength())
 
         //When
-        val removed = map.remove("c")
+        val removed = map.remove(33)
 
         //Then
-        assertEquals(3, removed)
-        assertNull(map.get("c"))
-        assertEquals(1, map.get("a"))
-        assertEquals(2, map.get("b"))
+        assertEquals("c", removed)
+        assertNull(map.get(33))
+        assertEquals("a", map.get(1))
+        assertEquals("b", map.get(17))
         assertEquals(2, map.size)
     }
 
     @Test
     fun givenChainOfThree_whenRemovingMiddleEntry_thenOthersRemain() {
         //Given
-        val map = SimpleHashMap<String, Int>(1)
-        map.put("a", 1)
-        map.put("b", 2)
-        map.put("c", 3)
+        // łańcuszek: 33 -> 17 -> 1
+        val map = SimpleHashMap<Int, String>(16)
+        map.put(1, "a")
+        map.put(17, "b")
+        map.put(33, "c")
+        assertEquals(3, map.maxBucketLength())
 
         //When
-        val removed = map.remove("b")
+        val removed = map.remove(17)
 
         //Then
-        assertEquals(2, removed)
-        assertNull(map.get("b"))
-        assertEquals(1, map.get("a"))
-        assertEquals(3, map.get("c"))
+        assertEquals("b", removed)
+        assertNull(map.get(17))
+        assertEquals("a", map.get(1))
+        assertEquals("c", map.get(33))
         assertEquals(2, map.size)
     }
 
     @Test
     fun givenChainOfThree_whenRemovingLastEntry_thenOthersRemain() {
         //Given
-        val map = SimpleHashMap<String, Int>(1)
-        map.put("a", 1)
-        map.put("b", 2)
-        map.put("c", 3)
+        // łańcuszek: 33 -> 17 -> 1
+        val map = SimpleHashMap<Int, String>(16)
+        map.put(1, "a")
+        map.put(17, "b")
+        map.put(33, "c")
+        assertEquals(3, map.maxBucketLength())
 
         //When
-        val removed = map.remove("a")
+        val removed = map.remove(1)
 
         //Then
-        assertEquals(1, removed)
-        assertNull(map.get("a"))
-        assertEquals(2, map.get("b"))
-        assertEquals(3, map.get("c"))
+        assertEquals("a", removed)
+        assertNull(map.get(1))
+        assertEquals("b", map.get(17))
+        assertEquals("c", map.get(33))
         assertEquals(2, map.size)
     }
 
@@ -290,5 +296,45 @@ class SimpleHashMapTest {
 
         //Then
         assertEquals("x", map.get(-5))
+    }
+
+    @Test
+    fun givenEmptyMap_whenMaxBucketLength_thenReturnsZero() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        val length = map.maxBucketLength()
+
+        //Then
+        assertEquals(0, length)
+    }
+
+    @Test
+    fun givenMapWithCapacity16_whenPut3KeysInTheSamePlace_thenMaxBucketLengthIs3() {
+        //Given
+        val map = SimpleHashMap<Int, String>(16)
+
+        //When
+        map.put(1, "a")
+        map.put(17, "b")
+        map.put(33, "c")
+
+        //Then
+        assertEquals(3, map.maxBucketLength())
+    }
+
+    @Test
+    fun givenEmptyMap_whenPut1000Elements_thenMaxBucketLengthLessThan10() {
+        //Given
+        val map = SimpleHashMap<String, Int>()
+
+        //When
+        for (i in 1..1000) {
+            map.put("key$i", i)
+        }
+
+        //Then
+        assertTrue(map.maxBucketLength() < 10)
     }
 }
