@@ -19,8 +19,10 @@ class TransactionGenerator(private val seed: Long) {
         require(duplicateRatio in 0.0..0.5) {"Duplicate ratio not in scope"}
 
         val random = Random(seed)
+        val duplicateCount = (count * duplicateRatio).toInt()
+        val originalCount = count - duplicateCount
 
-        return List(count) { index ->
+        val originals = List(originalCount) { index ->
             Transaction(
                 id = (index + 1).toLong(),
                 terminalId = terminals.random(random),
@@ -34,5 +36,16 @@ class TransactionGenerator(private val seed: Long) {
                 type = TransactionType.entries.random(random)
             )
         }
+
+        val duplicates = List(duplicateCount) {
+            val original = originals.random(random)
+            original.copy(
+                timestampMillis = original.timestampMillis + random.nextLong(1_000, 6_000)
+            )
+        }
+
+        val mixed = (originals + duplicates).shuffled(random).mapIndexed { index, transaction -> transaction.copy(id = (index + 1).toLong()) }
+
+        return mixed
     }
 }

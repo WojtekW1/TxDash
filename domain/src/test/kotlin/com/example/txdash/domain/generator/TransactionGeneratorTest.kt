@@ -2,6 +2,7 @@ package com.example.txdash.domain.generator
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TransactionGeneratorTest {
@@ -79,7 +80,7 @@ class TransactionGeneratorTest {
     }
 
     @Test
-    fun givenSeedAndArguments_whenGeneratingTransactions_thenTransactionsListsIdsAreUnique() {
+    fun givenSeedAndArguments_whenGeneratingTransactions_thenTransactionsListIdsAreUnique() {
         //Given
         val count = 1000
         val seed = 123L
@@ -89,6 +90,65 @@ class TransactionGeneratorTest {
         val areUnique = list.map { it.id }.toSet().size == count
 
         //Then
-        assertEquals(true, areUnique)
+        assertTrue(areUnique)
+    }
+
+    @Test
+    fun givenZeroDuplicateRatio_whenGeneratingTransactions_thenTransactionsListElementsAreUnique() {
+        //Given
+        val duplicateRatio = 0.0
+        val count = 1000
+
+        //When
+        val list = TransactionGenerator(123).generate(count, duplicateRatio)
+        val areUnique = list.map { Triple(it.terminalId, it.rrn, it.amountMinor) }.toSet().size == count
+
+        //Then
+        assertTrue(areUnique)
+    }
+
+    @Test
+    fun givenDuplicateRatio_whenGeneratingTransactions_thenTransactionsListDuplicatesNumberIsValid() {
+        //Given
+        val count = 1000
+        val seed = 123L
+        val duplicateRatio = 0.1
+
+        //When
+        val list = TransactionGenerator(seed).generate(count, duplicateRatio)
+        val duplicatesCount = list.size - list.map { Triple(it.terminalId, it.rrn, it.amountMinor) }.toSet().size
+
+        //Then
+        assertEquals(100, duplicatesCount)
+    }
+
+    @Test
+    fun givenDuplicateRatio_whenGeneratingTransactions_thenTransactionsListIdAreUnique() {
+        //Given
+        val count = 1000
+        val seed = 123L
+        val duplicateRatio = 0.1
+
+        //When
+        val list = TransactionGenerator(seed).generate(count, duplicateRatio)
+
+        //Then
+        assertEquals(1000, list.size)
+        assertTrue(list.map { it.id }.toSet().size == count)
+    }
+
+    @Test
+    fun givensameSeedArguments_whenGeneratingTransactions_thenTransactionsListIdAreUnique() {
+        //Given
+        val count = 1000
+        val seed = 123L
+        val duplicateRatio = 0.1
+
+        //When
+        val list1 = TransactionGenerator(seed).generate(count, duplicateRatio)
+        val list2 = TransactionGenerator(seed).generate(count, duplicateRatio)
+
+        //Then
+        assertEquals(list1, list2)
     }
 }
