@@ -138,7 +138,7 @@ class TransactionGeneratorTest {
     }
 
     @Test
-    fun givensameSeedArguments_whenGeneratingTransactions_thenTransactionsListIdAreUnique() {
+    fun givenSameSeedArguments_whenGeneratingTransactions_thenTransactionsListsAreEqual() {
         //Given
         val count = 1000
         val seed = 123L
